@@ -1,19 +1,18 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const dotenv = require("dotenv");
-dotenv.config();
-
+const dotenv = require("dotenv")
+dotenv.config()
 const captainSchema = new mongoose.Schema({
-  fullName: {
-    firstName: {
+  fullname: {
+    firstname: {
       type: String,
       required: true,
-      minlength: [3, "First name must be at least 3 characters long"],
+      minlength: [3, "Firstname must be at least 3 characters long"],
     },
-    lastName: {
+    lastname: {
       type: String,
-      minlength: [3, "Last name must be at least 3 characters long"],
+      minlength: [3, "Lastname must be at least 3 characters long"],
     },
   },
   email: {
@@ -31,11 +30,13 @@ const captainSchema = new mongoose.Schema({
   socketId: {
     type: String,
   },
+
   status: {
     type: String,
     enum: ["active", "inactive"],
     default: "inactive",
   },
+
   vehicle: {
     color: {
       type: String,
@@ -52,18 +53,15 @@ const captainSchema = new mongoose.Schema({
       required: true,
       min: [1, "Capacity must be at least 1"],
     },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
     vehicleType: {
       type: String,
       required: true,
-      enum: ["car", "bike", "auto"],
+      enum: ["car", "motorcycle", "auto"],
     },
   },
+
   location: {
-    lat: {
+    ltd: {
       type: Number,
     },
     lng: {
@@ -72,7 +70,6 @@ const captainSchema = new mongoose.Schema({
   },
 });
 
-// Generate Auth Token
 captainSchema.methods.generateAuthToken = function () {
   const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET, {
     expiresIn: "24h",
@@ -80,17 +77,15 @@ captainSchema.methods.generateAuthToken = function () {
   return token;
 };
 
-
-// Compare Password
 captainSchema.methods.comparePassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 
-// Hash Password
-captainSchema.methods.hashPassword = async function (password) {
+captainSchema.statics.hashPassword = async function (password) {
   return await bcrypt.hash(password, 10);
 };
 
-const captainModel = mongoose.model("Captain", captainSchema);
+const captainModel = mongoose.model("captain", captainSchema);
 
-module.exports = captainModel;
+
+module.exports = captainModel

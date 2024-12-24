@@ -1,14 +1,14 @@
-const dotenv = require("dotenv");
 const http = require("http");
-const app = require("./app.js"); 
+const app = require("./app");
+const { initializeSocket } = require("./socket");
+const dotenv = require("dotenv")
 dotenv.config()
-
-const PORT = process.env.PORT;
+const port = process.env.PORT || 4000;
 
 const server = http.createServer(app);
-console.log("MongoDB URI:", process.env.DB);
 
+initializeSocket(server);
 
-server.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+server.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });

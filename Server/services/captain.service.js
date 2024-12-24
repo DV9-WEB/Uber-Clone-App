@@ -1,8 +1,9 @@
-const captainModel = require("../models/captainModel");
-
+const captainModel = require("../models/captain.model");
+const dotenv = require("dotenv")
+dotenv.config()
 module.exports.createCaptain = async ({
-  firstName,
-  lastName,
+  firstname,
+  lastname,
   email,
   password,
   color,
@@ -11,7 +12,7 @@ module.exports.createCaptain = async ({
   vehicleType,
 }) => {
   if (
-    !firstName ||
+    !firstname ||
     !email ||
     !password ||
     !color ||
@@ -21,12 +22,10 @@ module.exports.createCaptain = async ({
   ) {
     throw new Error("All fields are required");
   }
- 
-
-  const captain = await captainModel.create({
-    fullName: {
-      firstName,
-      lastName,
+  const captain = captainModel.create({
+    fullname: {
+      firstname,
+      lastname,
     },
     email,
     password,
@@ -37,10 +36,6 @@ module.exports.createCaptain = async ({
       vehicleType,
     },
   });
-    
-    await captain.save()
 
   return captain;
 };
-
- 

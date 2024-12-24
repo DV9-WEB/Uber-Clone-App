@@ -1,17 +1,16 @@
-const blacklistTokenModel = require("../models/blacklistTokenModel.js");
-const userModel = require("../models/userSchema.js");
-const userService = require("../services/userService.js");
+const userModel = require("../models/user.model");
+const userService = require("../services/user.service");
 const { validationResult } = require("express-validator");
-
+const blackListTokenModel = require("../models/blackListToken.model");
+const dotenv = require("dotenv")
+dotenv.config()
 module.exports.registerUser = async (req, res, next) => {
-
   const errors = validationResult(req);
-  
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const { fullName, email, password } = req.body;
+  const { fullname, email, password } = req.body;
 
   const isUserAlready = await userModel.findOne({ email });
 
@@ -22,8 +21,8 @@ module.exports.registerUser = async (req, res, next) => {
   const hashedPassword = await userModel.hashPassword(password);
 
   const user = await userService.createUser({
-    firstName: fullName.firstName,
-    lastName: fullName.lastName,
+    firstname: fullname.firstname,
+    lastname: fullname.lastname,
     email,
     password: hashedPassword,
   });
@@ -60,13 +59,15 @@ module.exports.loginUser = async (req, res, next) => {
   res.status(200).json({ token, user });
 };
 
-module.exports.userProfile = async (req, res, next) => {
-  res.status(200).json(req.user)
-}
+module.exports.getUserProfile = async (req, res, next) => {
+  res.status(200).json(req.user);
+};
 
-module.exports.logoutUser = async (req, res, nex) => {
+module.exports.logoutUser = async (req, res, next) => {
   res.clearCookie("token");
-  const token = req.cookies.token || req.header.authorization.spilit(" ")[1]
-  await blacklistTokenModel.create({token})
-  res.status(200).json({message: "Logged Out"})
-}
+  const token = req.cookies.token || req.headers.authorization.split(" ")[1];
+
+  await blackListTokenModel.create({ token });
+
+  res.status(200).json({ message: "Logged out" });
+};

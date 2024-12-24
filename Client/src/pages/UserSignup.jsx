@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-// import axios from "axios";
-// import { UserDataContext } from "../context/UserContext";
+import axios from "axios";
+import { UserDataContext } from "../context/UserContext";
 
 const UserSignup = () => {
   const [email, setEmail] = useState("");
@@ -10,43 +10,39 @@ const UserSignup = () => {
   const [lastName, setLastName] = useState("");
   const [userData, setUserData] = useState({});
 
-//   const navigate = useNavigate();
+  const navigate = useNavigate();
 
-//   const { user, setUser } = useContext(UserDataContext);
+  const { user, setUser } = useContext(UserDataContext);
 
-const submitHandler = (e) => {
+const submitHandler = async (e) => {
   e.preventDefault();
+  try {
+    const newUser = {
+      fullname: {
+        firstname: firstName,
+        lastname: lastName,
+      },
+      email: email,
+      password: password,
+    };
 
-  const newUserData = {
-    fullName: {
-      firstName: firstName,
-      lastName: lastName,
-    },
-    email: email,
-    password: password,
-  };
+    const response = await axios.post(
+      `${import.meta.env.VITE_BASE_URL}/users/register`,
+      newUser
+    );
 
-  console.log(newUserData); 
-  setUserData(newUserData);
-
-  //     const response = await axios.post(
-  //       `${import.meta.env.VITE_BASE_URL}/users/register`,
-  //       newUser
-  //     );
-
-  //     if (response.status === 201) {
-  //       const data = response.data;
-  //       setUser(data.user);
-  //       localStorage.setItem("token", data.token);
-  //       navigate("/home");
-  //     }
-
-  setEmail("");
-  setEmail("");
-  setFirstName("");
-  setLastName("");
-  setPassword("");
+    if (response.status === 201) {
+      const data = response.data;
+      setUser(data.user);
+      localStorage.setItem("token", data.token);
+      navigate("/home");
+    }
+  } catch (err) {
+    console.error("Signup failed: ", err.response.data);
+    alert("Signup failed");
+  }
 };
+
   return (
     <div>
       <div className="p-7 h-screen flex flex-col justify-between">
@@ -77,7 +73,7 @@ const submitHandler = (e) => {
                 }}
               />
               <input
-                // required
+                required
                 className="bg-[#eeeeee] w-1/2  rounded-lg px-4 py-2 border  text-lg placeholder:text-base"
                 type="text"
                 placeholder="Last name"
@@ -113,7 +109,7 @@ const submitHandler = (e) => {
               placeholder="password"
             />
 
-            <button type="submit" className="bg-[#111] text-white font-semibold mb-3 rounded-lg px-4 py-2 w-full text-lg placeholder:text-base">
+            <button className="bg-[#111] text-white font-semibold mb-3 rounded-lg px-4 py-2 w-full text-lg placeholder:text-base">
               Create account
             </button>
           </form>
@@ -125,7 +121,7 @@ const submitHandler = (e) => {
           </p>
         </div>
         <div>
-          <p className="text-sm leading-tight">
+          <p className="text-[10px] leading-tight">
             This site is protected by reCAPTCHA and the{" "}
             <span className="underline">Google Privacy Policy</span> and{" "}
             <span className="underline">Terms of Service apply</span>.

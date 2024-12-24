@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-// import { CaptainDataContext } from "../context/CapatainContext";
+import { CaptainDataContext } from "../context/CaptainContext.jsx";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const CaptainSignup = () => {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -16,9 +16,8 @@ const CaptainSignup = () => {
   const [vehiclePlate, setVehiclePlate] = useState("");
   const [vehicleCapacity, setVehicleCapacity] = useState("");
   const [vehicleType, setVehicleType] = useState("");
-  const [data, setData] = useState()
 
-  // const { captain, setCaptain } = React.useContext(CaptainDataContext);
+  const { captain, setCaptain } = React.useContext(CaptainDataContext);
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -36,19 +35,18 @@ const CaptainSignup = () => {
         vehicleType: vehicleType,
       },
     };
-    console.log(captainData)
 
-    // const response = await axios.post(
-    //   `${import.meta.env.VITE_BASE_URL}/captains/register`,
-    //   captainData
-    // );
+    const response = await axios.post(
+      `${import.meta.env.VITE_BASE_URL}/captains/register`,
+      captainData
+    );
 
-    // if (response.status === 201) {
-    //   const data = response.data;
-    //   setCaptain(data.captain);
-    //   localStorage.setItem("token", data.token);
-    //   navigate("/captain-home");
-    // }
+    if (response.status === 201) {
+      const data = response.data;
+      setCaptain(data.captain);
+      localStorage.setItem("token", data.token);
+      navigate("/captain-home");
+    }
 
     setEmail("");
     setFirstName("");
@@ -173,7 +171,7 @@ const CaptainSignup = () => {
               </option>
               <option value="car">Car</option>
               <option value="auto">Auto</option>
-              <option value="moto">Bike</option>
+              <option value="moto">Moto</option>
             </select>
           </div>
 
@@ -189,7 +187,7 @@ const CaptainSignup = () => {
         </p>
       </div>
       <div>
-        <p className="text-sm mt-6 leading-tight">
+        <p className="text-[10px] mt-6 leading-tight">
           This site is protected by reCAPTCHA and the{" "}
           <span className="underline">Google Privacy Policy</span> and{" "}
           <span className="underline">Terms of Service apply</span>.

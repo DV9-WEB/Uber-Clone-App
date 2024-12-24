@@ -1,17 +1,16 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const dotenv = require("dotenv");
-dotenv.config();
-
+const dotenv = require("dotenv")
+dotenv.config()
 const userSchema = new mongoose.Schema({
-  fullName: {
-    firstName: {
+  fullname: {
+    firstname: {
       type: String,
       required: true,
       minlength: [3, "First name must be at least 3 characters long"],
     },
-    lastName: {
+    lastname: {
       type: String,
       minlength: [3, "Last name must be at least 3 characters long"],
     },
