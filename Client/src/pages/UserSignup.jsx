@@ -8,7 +8,6 @@ const UserSignup = () => {
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [userData, setUserData] = useState({});
 
   const navigate = useNavigate();
 
@@ -38,10 +37,19 @@ const submitHandler = async (e) => {
       navigate("/home");
     }
   } catch (err) {
-    console.error("Signup failed: ", err.response.data);
-    alert("Signup failed");
+    if (err.response) {
+      console.error("Signup failed: ", err.response.data);
+      alert(`Signup failed: ${err.response.data.message || "Unknown error"}`);
+    } else if (err.request) {
+      console.error("No response received from server.");
+      alert("No response received from server. Please try again later.");
+    } else {
+      console.error("Error setting up request:", err.message);
+      alert("An error occurred. Please try again.");
+    }
   }
 };
+
 
   return (
     <div>
